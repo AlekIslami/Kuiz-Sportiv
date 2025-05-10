@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuiz Sportiv</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff8a00, #da1b60);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        .quiz-container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .question {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .answers button {
+            background-color: #4a90e2;
+            border: none;
+            padding: 20px 40px;
+            margin: 10px;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s, background-color 0.3s;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .answers button:hover {
+            background-color: #f06;
+            transform: scale(1.1);
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin: 10px;
+        }
+
+        .score-board {
+            margin-top: 30px;
+        }
+
+        #restartButton {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        #restartButton:hover {
+            background-color: #218838;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .quiz-container {
+                width: 100%;
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .answers button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="category-icon">
+            <span>⚽</span> <!-- Futboll Icon -->
+        </div>
+        <h1>Kuiz Sportiv</h1>
+        <div class="question" id="question">Pyetja do të shfaqet këtu</div>
+        <div class="answers" id="answers"></div>
+        <div class="emoji" id="emoji">😎</div>
+        <div class="score-board">
+            <p>Rezultati: <span id="score">0</span></p>
+        </div>
+        <button id="restartButton" style="display: none;">Rifillo Kuizin</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Cili është kampioni aktual i Botërorit të Futbollit?",
+                answers: ["Brazil", "Franca", "Gjermania", "Spanja"],
+                correct: 1
+            },
+            {
+                question: "Cili është lojtari më i mirë i Basketbollit për vitin 2023?",
+                answers: ["LeBron James", "Giannis Antetokounmpo", "Kevin Durant", "Stephen Curry"],
+                correct: 3
+            },
+            {
+                question: "Cili është kampioni aktual i Wimbledon në Tenis?",
+                answers: ["Roger Federer", "Novak Djokovic", "Rafael Nadal", "Andy Murray"],
+                correct: 1
+            },
+            {
+                question: "Kush fitoi medaljen e artë në Ping Pong në Lojërat Olimpike 2020?",
+                answers: ["Ma Long", "Zhang Jike", "Timo Boll", "Fan Zhendong"],
+                correct: 0
+            },
+            {
+                question: "Cili është sporti më i shikuar në botë?",
+                answers: ["Futboll", "Basketboll", "Kriket", "Formula 1"],
+                correct: 0
+            },
+            {
+                question: "Cili është ekipi më i suksesshëm në Ligën e Kampionëve të UEFA?",
+                answers: ["Real Madrid", "Barcelona", "Bayern Munich", "Liverpool"],
+                correct: 0
+            },
+            {
+                question: "Cili është lojtari më i shpejtë i futbollit?",
+                answers: ["Kylian Mbappé", "Usain Bolt", "Cristiano Ronaldo", "Lionel Messi"],
+                correct: 0
+            },
+            {
+                question: "Cili është sporti më i njohur në Amerikë?",
+                answers: ["Futboll amerikan", "Basketboll", "Baseball", "Hokej"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById("question");
+        const answersElement = document.getElementById("answers");
+        const scoreElement = document.getElementById("score");
+        const emojiElement = document.getElementById("emoji");
+        const restartButton = document.getElementById("restartButton");
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            answersElement.innerHTML = '';
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = document.createElement("button");
+                button.textContent = answer;
+                button.onclick = () => checkAnswer(index);
+                answersElement.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const currentQuestion = questions[currentQuestionIndex];
+
+            if (selectedIndex === currentQuestion.correct) {
+                score++;
+                scoreElement.textContent = score;
+                emojiElement.textContent = "🎉";
+                setTimeout(() => emojiElement.textContent = "😎", 1000);
+            } else {
+                emojiElement.textContent = "❌";
+                setTimeout(() => emojiElement.textContent = "😎", 1000);
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            questionElement.textContent = "Kuizi përfundoi!";
+            answersElement.innerHTML = `<p>Shumë mirë! Të rezultati yt ishte: ${score} nga ${questions.length}!</p>`;
+            restartButton.style.display = "inline-block";
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreElement.textContent = score;
+            restartButton.style.display = "none";
+            loadQuestion();
+        }
+
+        restartButton.onclick = restartQuiz;
+
+        loadQuestion();
+    </script>
+</body>
+</html>
